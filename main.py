@@ -1,31 +1,18 @@
-import requests
 from bs4 import BeautifulSoup
-import re
-url ="https://en.wikipedia.org/wiki/List_of_Game_of_Thrones_episodes"
+import requests
+
+url = "http://www.webscrapingfordatascience.com/postform3/"
 result = requests.get(url)
 soup = BeautifulSoup(result.text, 'html.parser')
+protection = soup.find("input", {"name":"protection"}).get("value")
 
-epTable = soup.findAll('table',class_="wikitable plainrowheaders wikiepisodetable")
-episods = []
-for table in epTable:
-    headers = []
-    for header in table.find("tr").findAll("th"):
-        headers.append(header.text)
+data = {
+    "protection":protection,
+    "name":"diako",
+    "gender":"M",
+    "pizza":"like",
+    "haircolor":"black"
+}
 
-    for row in table.findAll("tr")[1:]:
-        values = []
-        for col in row.findAll(["th","td"]):
-            values.append(col.text)
-        if values:
-            episodDict = {headers[i]:values[i] for i in range(len(values))}
-            episods.append(episodDict)
-for ep in episods:
-    print(ep)
-
-
-
-
-
-
-
-
+final_result = requests.post(url, data)
+print(final_result.text)
