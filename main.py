@@ -1,18 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
 
-url = "http://www.webscrapingfordatascience.com/postform3/"
-result = requests.get(url)
-soup = BeautifulSoup(result.text, 'html.parser')
-protection = soup.find("input", {"name":"protection"}).get("value")
+url = "http://www.webscrapingfordatascience.com/cookielogin/"
 
-data = {
-    "protection":protection,
-    "name":"diako",
-    "gender":"M",
-    "pizza":"like",
-    "haircolor":"black"
+
+res = requests.post(url, data={"username":"dia", "password":"1234"})
+# print(res.cookies)
+
+mycookies = {
+    "PHPSESSID": res.cookies["PHPSESSID"]
 }
 
-final_result = requests.post(url, data)
-print(final_result.text)
+result = requests.get(url + "secret.php", cookies=mycookies)
+print(result.text)
